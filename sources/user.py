@@ -40,8 +40,7 @@ class UserLogin(MethodView):
             abort(400, message="Username or password is invalid")
 
         if user_data["username"] == 'admin':
-            access_token = create_access_token(identity=user_data["username"],
-                                               additional_claims={"is_administrator": True}, fresh=True)
+            access_token = create_access_token(identity=user_data["username"], fresh=True)
         else:
             access_token = create_access_token(identity=author.username, fresh=True)
 
