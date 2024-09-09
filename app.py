@@ -23,6 +23,7 @@ def create_app(db_url=None):
     app.config['JWT_COOKIE_CSRF_PROTECT'] = False
     db.init_app(app)
     jwt = JWTManager(app)
+    cors = CORS(app)
 
 
     @app.after_request
@@ -48,8 +49,9 @@ def create_app(db_url=None):
         admin = {"username": "admin", "password": hashlib.sha256("r04S9[*.£Wb6".encode()).hexdigest()}
         post = {"title": "Первый пост", "content": "Привет всем, оставляйте здесь интересные заметки."}
         db.session.add(AuthorModel(**admin))
+        db.session.add(PostModel(author_id=1, **post))
         db.session.commit()
-        print('Создан пользователь admin')
+        print('Создан пользователь админ и его пост')
 
     app.register_blueprint(PostBlp)
     app.register_blueprint(AuthorBlp)
