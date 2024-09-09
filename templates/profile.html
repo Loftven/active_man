@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+    <div class="row justify-content-center mt-5">
+      <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <img src=" {{ url_for('static', filename='images/default.jpg') }}" class="profile-photo" alt="Profile photo">
+            </div>
+            <p class="card-body">Ваши данные</p>
+            <p class="text-center text-info">Имя: {{ user }}</p>
+            <div class="text-center"><a href="{{ url_for('users.UserLogout') }}" class="btn btn-sm btn-outline-danger">Выйти</a>
+            </div>
+            <p>Посты:</p>
+            <div class="container-fluid">
+                {% if posts %}
+                    {% if posts is iterable %}
+                        {% for item in posts %}
+                             <div class="col-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{item.title}}</h5>
+                                        <p class="card-text">{{item.content}}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="card-body">
+                                            <p class="card-text"><small class="text-muted">автор: {{ item.author.username }} </small></p>
+                                            <p class="card-text"><small class="text-muted">опубликовано {{ item.date }}</small></p>
+                                        </div>
+                                        <a href="{{ url_for('posts.ChangePost', post_id=item.id) }}" class="btn btn-sm btn-outline-secondary me-2">Изменить</a>
+                                        <a href="{{ url_for('posts.ChangePost', post_id=item.id) }}" class="btn btn-sm btn-outline-danger">Удалить</a>
+                                    </div>
+                                </div>
+                             </div>
+                        {% endfor %}
+                    {% else %}
+                         <div class="col-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{posts.title}}</h5>
+                                        <p class="card-text">{{posts.content}}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="card-body">
+                                            <p class="card-text"><small class="text-muted">автор: {{ posts.author.username }} </small></p>
+                                            <p class="card-text"><small class="text-muted">опубликовано {{ posts.date }}</small></p>
+                                        </div>
+                                        <a href="{{ url_for('posts.ChangePost', post_id=posts.id) }}" class="btn btn-sm btn-outline-secondary me-2">Изменить</a>
+                                        <a href="{{ url_for('posts.ChangePost', post_id=posts.id) }}" class="btn btn-sm btn-outline-danger">Удалить</a>
+                                    </div>
+                                </div>
+                             </div>
+                    {% endif %}
+                {% else %}
+                    <div class="card">
+                    <h5 class="card-title">Постов еще нет</h5>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+</title>
+</head>
+<body>
+
+</body>
+</html>
