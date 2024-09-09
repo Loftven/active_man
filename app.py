@@ -2,13 +2,14 @@ from datetime import datetime, timedelta, timezone
 from flask import Flask, jsonify
 from db import db
 import os
-from sources.post import blp as PostBlp
+from sources.project import blp as PostBlp
 from sources.user import blp as AuthorBlp
 from flask_jwt_extended import JWTManager, get_jwt, create_access_token, get_jwt_identity, \
     set_access_cookies
 from models.jwt import BlocklistJwt
 from models.user import AuthorModel
 import hashlib
+import pyzbar
 
 
 def create_app(db_url=None):
@@ -22,7 +23,6 @@ def create_app(db_url=None):
     app.config['JWT_COOKIE_CSRF_PROTECT'] = False
     db.init_app(app)
     jwt = JWTManager(app)
-    cors = CORS(app)
 
 
     @app.after_request
@@ -48,9 +48,8 @@ def create_app(db_url=None):
         admin = {"username": "admin", "password": hashlib.sha256("r04S9[*.£Wb6".encode()).hexdigest()}
         post = {"title": "Первый пост", "content": "Привет всем, оставляйте здесь интересные заметки."}
         db.session.add(AuthorModel(**admin))
-        db.session.add(PostModel(author_id=1, **post))
         db.session.commit()
-        print('Создан пользователь админ и его пост')
+        print('Создан пользователь admin')
 
     app.register_blueprint(PostBlp)
     app.register_blueprint(AuthorBlp)
