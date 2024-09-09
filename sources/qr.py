@@ -14,12 +14,14 @@ from sqlalchemy.exc import SQLAlchemyError
 import uuid
 import random
 import qrcode
+# from pyzbar.pyzbar import decode
+# from PIL import Image
 
 
 blp = Blueprint('qr_code', __name__, 'operations with QR code')
 
 
-@blp.route('/qr/login')
+@blp.route('/login/qr')
 class QrLogin(MethodView):
     def get(self, token: str = None, mfa_code: str = None):
 
