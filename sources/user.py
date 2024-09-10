@@ -1,18 +1,23 @@
-from db import db
+from datetime import datetime
+import hashlib
+
+from flask import jsonify, render_template, render_template_string
 from flask_jwt_extended import jwt_required, create_access_token
 from flask_jwt_extended import get_jwt, set_access_cookies, unset_access_cookies
-import hashlib
-from flask import render_template, render_template_string
 from flask.views import MethodView
-from models.user import AuthorModel
-from models.jwt import BlocklistJwt
 from flask_smorest import Blueprint, abort
 from schemas import AuthorLoginSchema
-from flask import jsonify
-from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 
-blp = Blueprint("users", __name__, description='Operations with users')
+from db import db
+from models import AuthorModel
+from models import BlocklistJwt
+
+blp = Blueprint(
+    "users",
+    __name__,
+    description='Operations with users'
+)
 
 
 @blp.route('/register')
