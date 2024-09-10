@@ -8,10 +8,13 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from schemas import AuthorLoginSchema
 from sqlalchemy.exc import SQLAlchemyError
-
 from db import db
 from models import AuthorModel
 from models import BlocklistJwt
+from models import ProjectModel
+from sources.qr import QRGenerator
+import uuid
+import random
 
 blp = Blueprint(
     "users",
@@ -64,8 +67,26 @@ class UserProfile(MethodView):
     def get(self):
         token = get_jwt()
         author = AuthorModel.query.filter(AuthorModel.username == token['sub']).first()
-        posts = PostModel.query.filter(PostModel.author_id == author.id)
+        posts = ProjectModel.query.filter(ProjectModel.author_id == author.id)
         return render_template('profile.html', user=token['sub'], posts=posts)
+
+
+@blp.route('/profile/qr-login')
+class UserProfileQr(MethodView):
+    @jwt_required()
+    async def get(self):
+        jwt_token = get_jwt()
+        token = uuid.uuid4().hex
+        mfa_code = random.randint(1111, 9999)
+        name = uuid.uuid4().hex + '.png'
+        author = AuthorModel.query.filter(AuthorModel.username == jwt_token['sub']).first()
+        author.mfa_code = mfa_code
+        author.token = token
+        db.session.add(author)
+        db.session.commit()
+        qr_handler = QRGenerator(token, mfa_code, name)
+        await qr_handler.proccess()
+        return {"Message": "success"}, 200
 
 
 @blp.route('/logout')
