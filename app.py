@@ -2,13 +2,14 @@ from datetime import datetime, timedelta, timezone
 from flask import Flask, jsonify
 from db import db
 import os
-from sources.post import blp as PostBlp
+from sources.project import blp as PostBlp
 from sources.user import blp as AuthorBlp
 from flask_jwt_extended import JWTManager, get_jwt, create_access_token, get_jwt_identity, \
     set_access_cookies
 from models.jwt import BlocklistJwt
 from models.user import AuthorModel
 import hashlib
+import pyzbar
 
 
 def create_app(db_url=None):
