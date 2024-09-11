@@ -11,6 +11,7 @@ import uuid
 import qrcode
 import asyncio
 import os
+import time
 
 
 blp = Blueprint('qr_code', __name__, 'operations with QR code')
@@ -23,39 +24,35 @@ class QrLogin(MethodView):
         if token is None or mfa_code is None:
             return render_template('error.html', text_error='missing arguments')
 
-        if not AuthorModel.query.filter(token == token):
-            abort('invalid token')
+        try:
+            author = AuthorModel.query.filter(mfa_code == mfa_code).first()
+            if not author.token == token and not author.mfa_code == mfa_code:
+                return render_template('error.html', text_error='invalid token or mfa_code, please regen your qr code')
 
-        author = AuthorModel.query(token=token).first()
-        if not author.token == token and not author.mfa_code == mfa_code:
-            return render_template('error.html', text_error='invalid token or mfa_code, please regen your qr code')
+        except SQLAlchemyError as e:
+            abort(404, message='invalid token or mfa code')
 
 
 class QRGenerator(MethodView):
 
-    def __init__(self, token, mfa_code, name, file_path):
+    def __init__(self, token, mfa_code, file_path):
         self.token = token
         self.mfa_code = mfa_code
-        self.name = name
         self.file_path = file_path
 
-    async def gen_qr(self):
+    def gen_qr(self):
         qr = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4,)
         qr.add_data(f'http://domen.com/qr/login?token={self.token}&mfa_code={self.mfa_code}')
         qr.make(fit=True)
         img = qr.make_image(fill_color="blue", back_color='white')
-        img.save(self.name)
+        img.save(self.file_path)
 
-    async def rm_qr(self):
-        await asyncio.sleep(30)  # Ждем 5 минут
+    def rm_qr(self):
+        time.sleep(300)  # Ждем 5 минут
         try:
-            os.remove(self.file_path + "\\" + self.name)
+            os.remove(self.file_path)
         except OSError as e:
             print(e)
-
-    async def proccess(self):
-        await self.gen_qr()
-        await self.rm_qr()
 
 
 

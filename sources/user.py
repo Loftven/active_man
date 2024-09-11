@@ -1,6 +1,6 @@
 from datetime import datetime
 import hashlib
-
+import threading
 from flask import jsonify, render_template, render_template_string
 from flask_jwt_extended import jwt_required, create_access_token
 from flask_jwt_extended import get_jwt, set_access_cookies, unset_access_cookies
@@ -15,6 +15,10 @@ from models import ProjectModel
 from sources.qr import QRGenerator
 import uuid
 import random
+import os
+
+BASE_DIR = r"C:\Users\ilya1\PycharmProjects\standoff_app"
+
 
 blp = Blueprint(
     "users",
@@ -74,18 +78,20 @@ class UserProfile(MethodView):
 @blp.route('/profile/qr-login')
 class UserProfileQr(MethodView):
     @jwt_required()
-    async def get(self):
+    def get(self):
         jwt_token = get_jwt()
         token = uuid.uuid4().hex
         mfa_code = random.randint(1111, 9999)
-        name = uuid.uuid4().hex + '.png'
+        filename = uuid.uuid4().hex + '.png'
         author = AuthorModel.query.filter(AuthorModel.username == jwt_token['sub']).first()
         author.mfa_code = mfa_code
         author.token = token
         db.session.add(author)
         db.session.commit()
-        qr_handler = QRGenerator(token, mfa_code, name, r"C:\Users\ilya1\PycharmProjects\standoff_app")
-        await qr_handler.proccess()
+        file_path = os.path.join(BASE_DIR, filename)
+        qr_handler = QRGenerator(token, mfa_code, file_path)
+        qr_handler.gen_qr()
+        threading.Thread(target=qr_handler.rm_qr).start()
         return {"Message": "success"}, 200
 
 

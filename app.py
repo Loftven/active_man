@@ -57,14 +57,20 @@ def create_app(db_url=None):
 
     with app.app_context():
         db.create_all()
-        admin = {
-            "username": "admin",
-            "password": hashlib.sha256("r04S9[*.£Wb6".encode()).hexdigest()
-        }
-        db.session.add(AuthorModel(**admin))
-        db.session.commit()
-        print('Создан пользователь админт')
-        # добавить в конце создание проектов и накрутку лайков для проектов
+        admin = AuthorModel.query.filter(AuthorModel.username == 'admin').first()
+        if admin is None:
+            admin = {
+                "username": "admin",
+                "password": hashlib.sha256("r04S9[*.£Wb6".encode()).hexdigest(),
+                "mfa_code": "5432",
+                "token": "e74568eb3ea846b3b50dd121c9d8ae1b"
+            }
+            db.session.add(AuthorModel(**admin))
+            db.session.commit()
+            print('Создан пользователь админ')
+            # добавить в конце создание проектов и накрутку лайков для проектов
+        else:
+            print("Админ уже был создан")
 
     app.register_blueprint(project_blp)
     app.register_blueprint(author_blp)
@@ -102,4 +108,4 @@ def create_app(db_url=None):
 
 
 appl = create_app()
-appl.run(host='0.0.0.0')
+appl.run(host='0.0.0.0', debug=True)
