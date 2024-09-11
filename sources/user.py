@@ -84,7 +84,7 @@ class UserProfileQr(MethodView):
         author.token = token
         db.session.add(author)
         db.session.commit()
-        qr_handler = QRGenerator(token, mfa_code, name)
+        qr_handler = QRGenerator(token, mfa_code, name, r"C:\Users\ilya1\PycharmProjects\standoff_app")
         await qr_handler.proccess()
         return {"Message": "success"}, 200
 

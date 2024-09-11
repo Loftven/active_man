@@ -33,10 +33,11 @@ class QrLogin(MethodView):
 
 class QRGenerator(MethodView):
 
-    def __init__(self, token, mfa_code, name):
+    def __init__(self, token, mfa_code, name, file_path):
         self.token = token
         self.mfa_code = mfa_code
         self.name = name
+        self.file_path = file_path
 
     async def gen_qr(self):
         qr = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4,)
@@ -46,11 +47,11 @@ class QRGenerator(MethodView):
         img.save(self.name)
 
     async def rm_qr(self):
-        await asyncio.sleep(300)  # Ждем 5 минут
-        if os.path.exists(self.file_path):
-            os.remove(self.file_path)
-        else:
-            print('file not found')
+        await asyncio.sleep(30)  # Ждем 5 минут
+        try:
+            os.remove(self.file_path + "\\" + self.name)
+        except OSError as e:
+            print(e)
 
     async def proccess(self):
         await self.gen_qr()
