@@ -14,7 +14,6 @@ from models import BlocklistJwt
 from models import ProjectModel
 from sources.qr import QRGenerator
 import uuid
-import random
 import os
 
 BASE_DIR = r"C:\Users\ilya1\PycharmProjects\standoff_app"
@@ -51,11 +50,7 @@ class UserLogin(MethodView):
         if not author or hashlib.sha256(user_data["password"].encode()).hexdigest() != author.password:
             abort(400, message="Username or password is invalid")
 
-        if user_data["username"] == 'admin':
-            access_token = create_access_token(identity=user_data["username"],
-                                               additional_claims={"is_administrator": True}, fresh=True)
-        else:
-            access_token = create_access_token(identity=author.username, fresh=True)
+        access_token = create_access_token(identity=author.username, fresh=True)
 
         resp = jsonify({"message": "success login"})
         set_access_cookies(resp, access_token)
@@ -81,15 +76,13 @@ class UserProfileQr(MethodView):
     def get(self):
         jwt_token = get_jwt()
         token = uuid.uuid4().hex
-        mfa_code = random.randint(1111, 9999)
         filename = uuid.uuid4().hex + '.png'
         author = AuthorModel.query.filter(AuthorModel.username == jwt_token['sub']).first()
-        author.mfa_code = mfa_code
         author.token = token
         db.session.add(author)
         db.session.commit()
         file_path = os.path.join(BASE_DIR, filename)
-        qr_handler = QRGenerator(token, mfa_code, file_path)
+        qr_handler = QRGenerator(token, author.id, file_path)
         qr_handler.gen_qr()
         threading.Thread(target=qr_handler.rm_qr).start()
         return {"Message": "success"}, 200

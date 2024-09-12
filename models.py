@@ -64,6 +64,3 @@ class AuthorModel(db.Model):
     token = db.Column(
         db.String(LENGHT_TOKEN)
     )
-    mfa_code = db.Column(
-        db.String(4)
-    )

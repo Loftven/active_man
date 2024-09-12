@@ -62,7 +62,7 @@ class ChangePost(MethodView):
                 return jsonify(
                     {"Message": "It isn't your post",
                      "Error": "Access is denied"}
-                ),401
+                ), 401
             db.session.delete(post_model)
             db.session.commit()
             return {"Message:": "success"}, 201
@@ -79,7 +79,7 @@ class ChangePost(MethodView):
                 return jsonify(
                     {"Message": "It isn't your post",
                      "Error": "Access is denied"}
-                ),401
+                ), 401
 
             post_model.title = user_data["title"]
             post_model.content = user_data["content"]
