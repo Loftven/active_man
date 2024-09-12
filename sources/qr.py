@@ -54,7 +54,7 @@ class QRGenerator(MethodView):
         img.save(self.file_path)
 
     def rm_qr(self):
-        time.sleep(15)  # Ждем 5 минут
+        time.sleep(300)  # Ждем 5 минут
         try:
             os.remove(self.file_path)
             engine = create_engine('sqlite:///instance/data.db')
