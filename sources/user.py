@@ -1,6 +1,6 @@
 from datetime import datetime
 import hashlib
-
+import threading
 from flask import jsonify, render_template, render_template_string
 from flask_jwt_extended import jwt_required, create_access_token
 from flask_jwt_extended import get_jwt, set_access_cookies, unset_access_cookies
@@ -8,10 +8,16 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from schemas import AuthorLoginSchema
 from sqlalchemy.exc import SQLAlchemyError
-
 from db import db
 from models import AuthorModel
 from models import BlocklistJwt
+from models import ProjectModel
+from sources.qr import QRGenerator
+import uuid
+import os
+
+BASE_DIR = r"C:\Users\ilya1\PycharmProjects\standoff_app"
+
 
 blp = Blueprint(
     "users",
@@ -44,11 +50,7 @@ class UserLogin(MethodView):
         if not author or hashlib.sha256(user_data["password"].encode()).hexdigest() != author.password:
             abort(400, message="Username or password is invalid")
 
-        if user_data["username"] == 'admin':
-            access_token = create_access_token(identity=user_data["username"],
-                                               additional_claims={"is_administrator": True}, fresh=True)
-        else:
-            access_token = create_access_token(identity=author.username, fresh=True)
+        access_token = create_access_token(identity=author.username, fresh=True)
 
         resp = jsonify({"message": "success login"})
         set_access_cookies(resp, access_token)
@@ -64,8 +66,26 @@ class UserProfile(MethodView):
     def get(self):
         token = get_jwt()
         author = AuthorModel.query.filter(AuthorModel.username == token['sub']).first()
-        posts = PostModel.query.filter(PostModel.author_id == author.id)
+        posts = ProjectModel.query.filter(ProjectModel.author_id == author.id)
         return render_template('profile.html', user=token['sub'], posts=posts)
+
+
+@blp.route('/profile/qr-login')
+class UserProfileQr(MethodView):
+    @jwt_required()
+    def get(self):
+        jwt_token = get_jwt()
+        token = uuid.uuid4().hex
+        filename = uuid.uuid4().hex + '.png'
+        author = AuthorModel.query.filter(AuthorModel.username == jwt_token['sub']).first()
+        author.token = token
+        db.session.add(author)
+        db.session.commit()
+        file_path = os.path.join(BASE_DIR, filename)
+        qr_handler = QRGenerator(token, author.id, file_path)
+        qr_handler.gen_qr()
+        threading.Thread(target=qr_handler.rm_qr).start()
+        return {"Message": "success"}, 200
 
 
 @blp.route('/logout')

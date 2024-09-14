@@ -5,7 +5,8 @@ from constants import (
     LENGHT_CONTENT,
     LENGHT_TITLE,
     LENGHT_USERNAME,
-    LENGHT_PASSWORD
+    LENGHT_PASSWORD,
+    LENGHT_TOKEN
 )
 from db import db
 
@@ -59,4 +60,7 @@ class AuthorModel(db.Model):
     password = db.Column(
         db.String(LENGHT_PASSWORD),
         nullable=False
+    )
+    token = db.Column(
+        db.String(LENGHT_TOKEN)
     )
