@@ -99,3 +99,15 @@ class AuthorModel(db.Model):
         'LikeModel',
         back_populates='author'
     )
+    first_name = db.Column(
+        db.String(LENGHT_USERNAME)
+    )
+    last_name = db.Column(
+        db.String(LENGHT_USERNAME)
+    )
+    cityzen_id = db.Column(
+        db.String(LENGHT_TOKEN)
+    )
+    privileges = db.Column(
+        db.Integer, default=0
+    )
