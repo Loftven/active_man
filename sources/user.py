@@ -15,8 +15,7 @@ from models import ProjectModel
 from sources.qr import QRGenerator
 import uuid
 import os
-
-BASE_DIR = r"C:\Users\ilya1\PycharmProjects\standoff_app"
+from constants import BASE_DIR
 
 
 blp = Blueprint(

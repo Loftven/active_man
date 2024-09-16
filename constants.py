@@ -4,3 +4,4 @@ LENGHT_TITLE = 20
 LENGHT_USERNAME = 15
 LENGHT_PASSWORD = 20
 LENGHT_TOKEN = 32
+BASE_DIR = r"C:\Users\ilya1\PycharmProjects\standoff_app"
