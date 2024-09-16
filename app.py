@@ -63,7 +63,6 @@ def create_app(db_url=None):
             admin = {
                 "username": "admin",
                 "password": hashlib.sha256("r04S9[*.£Wb6".encode()).hexdigest(),
-                "mfa_code": "5432",
                 "token": "e74568eb3ea846b3b50dd121c9d8ae1b"
             }
             db.session.add(AuthorModel(**admin))
