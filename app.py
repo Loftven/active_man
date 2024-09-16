@@ -3,7 +3,6 @@ from db import db
 import hashlib
 import os
 from flask import Flask, jsonify
-import asyncio
 from sources.project import blp as project_blp
 from sources.user import blp as author_blp
 from sources.qr import blp as qr_blp
@@ -63,7 +62,8 @@ def create_app(db_url=None):
             admin = {
                 "username": "admin",
                 "password": hashlib.sha256("r04S9[*.£Wb6".encode()).hexdigest(),
-                "token": "e74568eb3ea846b3b50dd121c9d8ae1b"
+                "token": "e74568eb3ea846b3b50dd121c9d8ae1b",
+                "privileges": 1
             }
             db.session.add(AuthorModel(**admin))
             db.session.commit()

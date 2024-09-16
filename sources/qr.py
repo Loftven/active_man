@@ -36,7 +36,7 @@ class QrLogin(MethodView):
             return resp, 200
 
         except SQLAlchemyError as e:
-            abort(404, message='invalid token or mfa code')
+            abort(404, message='invalid token')
 
 
 class QRGenerator(MethodView):
