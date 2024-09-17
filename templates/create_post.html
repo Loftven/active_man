@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Create Post</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.title.label }}<br>
+            {{ form.title(size=80) }}<br>
+        </p>
+        <p>
+            {{ form.content.label }}<br>
+            {{ form.content(rows=10, cols=80) }}<br>
+        </p>
+        <p>
+            {{ form.images.label }}<br>
+            {{ form.images() }}<br>
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

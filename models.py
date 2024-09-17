@@ -46,6 +46,10 @@ class ProjectModel(db.Model):
         db.String(LENGHT_TITLE),
         nullable=False
     )
+    image_names = db.Column(
+        db.PickleType,
+        nullable=True
+    )
     likes_count = db.Column(
         db.Integer,
         default=0
@@ -54,6 +58,7 @@ class ProjectModel(db.Model):
         'LikeModel',
         back_populates='project'
     )
+
 
 class LikeModel(db.Model):
     __tablename__ = 'likes'
