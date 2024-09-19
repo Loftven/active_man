@@ -34,7 +34,8 @@ def create_app(db_url=None):
     app.config['JWT_COOKIE_CSRF_PROTECT'] = False
     app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
     app.config['UPLOAD_EXTENSIONS'] = ['jpg', 'png', 'jpeg']
-    app.config['UPLOAD_FOLDER'] = r'C:\Users\ilya1\PycharmProjects\standoff_app\uploads'
+    app.config['UPLOAD_FOLDER'] = r'C:\Users\ilya1\PycharmProjects\standoff_app\static\uploads'
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
     db.init_app(app)
     jwt = JWTManager(app)

@@ -2,7 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% extends 'base.html' %}
+    <title>Create Post</title>
+    <style>
+        #drop-area {
+            border: 2px dashed #ccc;
+            border-radius: 20px;
+            width: 300px;
+            height: 200px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px auto;
+            position: relative;
+        }
+        #drop-area.hover {
+            border-color: #000;
+        }
+        .preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+{% extends 'base.html' %}
 
 {% block content %}
     <h1>Create Post</h1>
@@ -18,8 +48,82 @@
         </p>
         <p>
             {{ form.images.label }}<br>
-            {{ form.images() }}<br>
+            <div id="drop-area">
+                <h3>Перетащите файлы сюда</h3>
+                <p>или</p>
+                <input type="file" id="fileElem" name="images" multiple accept="image/*" onchange="handleFiles(this.files)">
+                <label for="fileElem">Выберите файлы</label>
+            </div>
         </p>
+        <div class="preview" id="preview"></div>
         <p>{{ form.submit() }}</p>
     </form>
+
+    <script>
+        let dropArea = document.getElementById('drop-area');
+        let preview = document.getElementById('preview');
+        const fileInput = document.getElementById('fileElem');
+
+        // Предотвращаем стандартное поведение браузера
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Классы для стилей во время перетаскивания
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.add('hover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.remove('hover'), false);
+        });
+
+        // Обработка перетаскивания файлов
+        dropArea.addEventListener('drop', (e) => {
+            let dt = e.dataTransfer;
+            let droppedFiles = dt.files;
+            handleFiles(droppedFiles); // Обрабатываем перетаскивание
+        });
+
+        // Обработка файлов
+        function handleFiles(files) {
+            // Получаем текущее состояние файлов в input
+            const dataTransfer = new DataTransfer();
+            // Добавляем в dataTransfer уже загруженные файлы
+            for (let i = 0; i < fileInput.files.length; i++) {
+                dataTransfer.items.add(fileInput.files[i]);
+            }
+            // Добавляем новые файлы
+            for (let file of files) {
+                dataTransfer.items.add(file);
+                previewFile(file); // Предварительный просмотр
+            }
+            // Обновляем input с файлами
+            fileInput.files = dataTransfer.files;
+        }
+
+        // Функция для предпросмотра файла
+        function previewFile(file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = function () {
+                const img = document.createElement('img');
+                img.src = reader.result;
+                preview.appendChild(img);
+            }
+        }
+
+        // Подключение к input на случай, если пользователь вручную загружает файлы
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+    </script>
 {% endblock %}
+</body>
+</html>

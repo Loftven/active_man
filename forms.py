@@ -6,5 +6,5 @@ from wtforms.validators import DataRequired
 class PostForm(FlaskForm):
     title = StringField('Заголовок', validators=[DataRequired()])
     content = TextAreaField('Контент', validators=[DataRequired()])
-    images = MultipleFileField('Картинки', description='Upload images (optional)')
+    images = FileField('Картинки', validators=[DataRequired()], description='Upload images (optional)')
     submit = SubmitField('Опубликовать')

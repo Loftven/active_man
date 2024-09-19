@@ -2,9 +2,6 @@ from flask import render_template, jsonify
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt
-
-from sqlalchemy.exc import SQLAlchemyError
-
 from db import db
 from models import ProjectModel, LikeModel
 from sources.user import AuthorModel
@@ -25,8 +22,6 @@ class Home(MethodView):
             "home.html",
             posts=posts
         )
-
-
 
 
 def get_username():
