@@ -11,7 +11,7 @@ class PostSchema(Schema):
     title = fields.Str(load_only=True, required=True)
 
 class AuthorLoginSchema(Schema):
-    id = fields.Int(dump_only=True)
+    # id = fields.Int(dump_only=True)
     username = fields.Str(load_only=True, required=True)
     password = fields.Str(load_only=True, required=True)
 

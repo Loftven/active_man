@@ -31,13 +31,17 @@ blp = Blueprint(
 class UserRegister(MethodView):
     @blp.arguments(AuthorLoginSchema)
     def post(self, user_data):
-        if AuthorModel.query.filter(user_data["username"] == AuthorModel.username).first():
+        if AuthorModel.query.filter(
+                user_data["username"] == AuthorModel.username
+        ).first():
             abort(409, message="User already exists")
-        user = AuthorModel(username=user_data["username"],
-                           password=hashlib.sha256(user_data["password"].encode()).hexdigest())
+        user = AuthorModel(
+            username=user_data["username"],
+            password=hashlib.sha256(user_data["password"].encode()).hexdigest()
+        )
         db.session.add(user)
         db.session.commit()
-        return {"Message": "success"}, 201
+        return redirect(url_for('users.UserLogin'))
 
     def get(self):
         return render_template('register.html')
