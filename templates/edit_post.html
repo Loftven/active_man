@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Post</title>
+    <title>Edit Post</title>
     <style>
         #drop-area {
             border: 2px dashed #ccc;
@@ -35,27 +35,33 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Create Post</h1>
+    <h1>Edit Post</h1>
     <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <p>
             {{ form.title.label }}<br>
-            {{ form.title(size=80) }}<br>
+            {{ form.title(size=80, value=post.title) }}<br>
         </p>
         <p>
             {{ form.content.label }}<br>
-            {{ form.content(rows=10, cols=80) }}<br>
+            {{ form.content(rows=10, cols=80, value=post.content) }}<br>
         </p>
         <p>
             {{ form.images.label }}<br>
             <div id="drop-area">
-                <h3>Перетащите файлы сюда</h3>
-                <p>или</p>
+                <h3>Drag files here</h3>
+                <p>or</p>
                 <input type="file" id="fileElem" name="images" multiple accept="image/*" onchange="handleFiles(this.files)">
-                <label for="fileElem">Выберите файлы</label>
+                <label for="fileElem">Choose files</label>
             </div>
         </p>
-        <div class="preview" id="preview"></div>
+        <div class="preview" id="preview">
+            {% if post.images %}
+                {% for image in post.images %}
+                    <img src="{{ image }}" alt="Current image">
+                {% endfor %}
+            {% endif %}
+        </div>
         <p>{{ form.submit() }}</p>
     </form>
 

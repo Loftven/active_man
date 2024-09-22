@@ -28,6 +28,7 @@ class BlocklistJwt(db.Model):
         nullable=False
     )
 
+
 class ProjectModel(db.Model):
     __tablename__ = 'projects'
     id = db.Column(
@@ -82,6 +83,7 @@ class LikeModel(db.Model):
         'AuthorModel',
         back_populates='likes'
     )
+
 
 class AuthorModel(db.Model):
     __tablename__ = 'author'

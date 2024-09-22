@@ -19,7 +19,7 @@ from models import AuthorModel, BlocklistJwt
 
 
 def create_app(db_url=None):
-    #TODO: убрать ключи из конфигоа в отдел файл!
+    #TODO: убрать ключи из конфигоа в отдел файл! UPLOAD_FOLDER
     app = Flask(__name__, template_folder='templates')
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url or os.getenv(
         "DATABASE_URL",
@@ -28,14 +28,16 @@ def create_app(db_url=None):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = 'enc_key_for_production_864792'
     app.config['SECRET_KEY'] = 'MY-SECRET-KEY-CSRF'
-    app.config['JWT_COOKIE_SECURE'] = False # change to True in production
+    app.config['JWT_COOKIE_SECURE'] = False  # change to True in production
     app.config['JWT_TOKEN_LOCATION'] = ["cookies", "headers"]
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=5)
     app.config['JWT_COOKIE_CSRF_PROTECT'] = False
     app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
     app.config['UPLOAD_EXTENSIONS'] = ['jpg', 'png', 'jpeg']
     app.config['UPLOAD_FOLDER'] = r'C:\Users\ilya1\PycharmProjects\standoff_app\static\uploads'
+    app.config['LATEX_FOLDER'] = r'C:\Users\ilya1\PycharmProjects\standoff_app\latex_templ'
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+    app.config['LIKES_REQUIRED'] = 15
 
     db.init_app(app)
     jwt = JWTManager(app)

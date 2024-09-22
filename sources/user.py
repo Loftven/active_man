@@ -11,7 +11,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from db import db
 from models import AuthorModel
 from models import BlocklistJwt
-from models import ProjectModel
 from sqlalchemy.sql import text
 from sqlalchemy import create_engine
 from sources.qr import QRGenerator
@@ -31,13 +30,17 @@ blp = Blueprint(
 class UserRegister(MethodView):
     @blp.arguments(AuthorLoginSchema)
     def post(self, user_data):
-        if AuthorModel.query.filter(user_data["username"] == AuthorModel.username).first():
+        if AuthorModel.query.filter(
+                user_data["username"] == AuthorModel.username
+        ).first():
             abort(409, message="User already exists")
-        user = AuthorModel(username=user_data["username"],
-                           password=hashlib.sha256(user_data["password"].encode()).hexdigest())
+        user = AuthorModel(
+            username=user_data["username"],
+            password=hashlib.sha256(user_data["password"].encode()).hexdigest()
+        )
         db.session.add(user)
         db.session.commit()
-        return {"Message": "success"}, 201
+        return redirect(url_for('users.UserLogin'))
 
     def get(self):
         return render_template('register.html')
@@ -69,6 +72,9 @@ class UserProfile(MethodView):
             #TODO: необходимо в шаблоне профиле предусмотреть возможность отображения подтверженной и нет у.з.
             token = get_jwt()
             author = AuthorModel.query.filter(AuthorModel.username == token['sub']).first()
+            if token['sub'] == 'admin':
+                return redirect(url_for('admin.home'))
+
             if not author.privileges:
                 return render_template('profile.html', user=token['sub'], args=None)
 
