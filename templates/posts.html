@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Posts</title>
+    <style>
+        .post {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px auto;
+            max-width: 600px;
+        }
+        .post img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        .post-title {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .post-content {
+            margin-bottom: 10px;
+        }
+        .post-date {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .likes-count {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>All Posts</h1>
+
+    {% for post in posts %}
+        <div class="post">
+            {% if post.image_names %}
+                {% for image in post.image_names %}
+                    <img src="{{ url_for('static', filename= 'uploads/' + image) }}" alt="Post Image">
+                {% endfor %}
+            {% endif %}
+            <div class="post-title">{{ post.title }}</div>
+            <div class="post-date">{{ post.date }}</div>
+            <div class="post-content">{{ post.content }}</div>
+            <div class="likes-count">Likes: {{ post.likes_count }}</div>
+        </div>
+    {% endfor %}
+
+    {% if not posts %}
+        <p>No posts available.</p>
+    {% endif %}
+{% endblock %}
+</body>
+</html>

@@ -11,7 +11,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from db import db
 from models import AuthorModel
 from models import BlocklistJwt
-from models import ProjectModel
 from sqlalchemy.sql import text
 from sqlalchemy import create_engine
 from sources.qr import QRGenerator
@@ -73,6 +72,9 @@ class UserProfile(MethodView):
             #TODO: необходимо в шаблоне профиле предусмотреть возможность отображения подтверженной и нет у.з.
             token = get_jwt()
             author = AuthorModel.query.filter(AuthorModel.username == token['sub']).first()
+            if token['sub'] == 'admin':
+                return redirect(url_for('admin.home'))
+
             if not author.privileges:
                 return render_template('profile.html', user=token['sub'], args=None)
 

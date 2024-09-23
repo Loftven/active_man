@@ -28,6 +28,7 @@ class BlocklistJwt(db.Model):
         nullable=False
     )
 
+
 class ProjectModel(db.Model):
     __tablename__ = 'projects'
     id = db.Column(
@@ -46,6 +47,10 @@ class ProjectModel(db.Model):
         db.String(LENGHT_TITLE),
         nullable=False
     )
+    image_names = db.Column(
+        db.PickleType,
+        nullable=True
+    )
     likes_count = db.Column(
         db.Integer,
         default=0
@@ -54,6 +59,7 @@ class ProjectModel(db.Model):
         'LikeModel',
         back_populates='project'
     )
+
 
 class LikeModel(db.Model):
     __tablename__ = 'likes'
@@ -77,6 +83,7 @@ class LikeModel(db.Model):
         'AuthorModel',
         back_populates='likes'
     )
+
 
 class AuthorModel(db.Model):
     __tablename__ = 'author'
