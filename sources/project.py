@@ -1,7 +1,9 @@
 from flask import render_template, jsonify
 from flask_smorest import Blueprint
 from flask.views import MethodView
+
 from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
+
 from db import db
 from models import ProjectModel, LikeModel
 from sources.user import AuthorModel
@@ -17,16 +19,25 @@ blp = Blueprint(
 @blp.route('/', endpoint='home')
 class Home(MethodView):
     def get(self):
-        posts = ProjectModel.query.all()
         return render_template(
-            "home.html",
-            posts=posts
+            'home.html',
         )
 
 
 @blp.route('/posts', endpoint='list_posts')
 class ListPosts(MethodView):
     def get(self):
+        posts = ProjectModel.query.all()
+        return render_template(
+            'posts/posts.html',
+            posts=posts
+        )
+      
+
+@blp.route('/posts', endpoint='list_posts')
+class ListPosts(MethodView):
+    def get(self):
+
         posts = ProjectModel.query.all()
         return render_template(
             "posts.html",
@@ -36,6 +47,7 @@ class ListPosts(MethodView):
 
 @blp.route('/post/<int:post_id>/like', endpoint='like_post')
 class LikeProject(MethodView):
+
     @jwt_required()
     def get(self, post_id):
         try:
@@ -55,6 +67,7 @@ class LikeProject(MethodView):
             new_like = LikeModel(
                 project_id=post_id,
                 author_id=current_user.id
+
             )
             post_model.likes_count += 1
             db.session.add(new_like)
@@ -63,3 +76,4 @@ class LikeProject(MethodView):
 
         except Exception as e:
             print(e)
+            return jsonify({"message": "Error occurred"}), 500
