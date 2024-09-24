@@ -7,6 +7,7 @@ from sources.project import blp as project_blp
 from sources.user import blp as author_blp
 from sources.qr import blp as qr_blp
 from sources.admin import blp as admin_blp
+from init_db import gen_users
 from flask_jwt_extended import (
     create_access_token,
     get_jwt,
@@ -81,6 +82,14 @@ def create_app(db_url=None):
             # добавить в конце создание проектов и накрутку лайков для проектов
         else:
             print("Админ уже был создан")
+
+        num_user = AuthorModel.query.all()
+        if len(num_user) < 80:
+            users = gen_users()
+            for user in users:
+                db.session.add(AuthorModel(**user))
+            db.session.commit()
+
 
     app.register_blueprint(project_blp)
     app.register_blueprint(author_blp)
