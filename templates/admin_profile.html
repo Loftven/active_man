@@ -18,6 +18,7 @@
                 <p class="card-text">У вас пока нет подтвержденных данных.</p>
                 <a href="{{ url_for('users.UserProfileApprove') }}" class="btn btn-primary w-100">Подтвердить данные</a>
             {% endif %}
+            <a href="{{ url_for('admin.CreatePost') }}" class="btn btn-success w-100 mt-3">Создать проект</a>
         </div>
     </div>
 </div>

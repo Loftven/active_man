@@ -1,61 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>All Posts</title>
-    <style>
-        .post {
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px auto;
-            max-width: 600px;
-        }
-        .post img {
-            max-width: 100%;
-            border-radius: 5px;
-        }
-        .post-title {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-        }
-        .post-content {
-            margin-bottom: 10px;
-        }
-        .post-date {
-            font-size: 0.9em;
-            color: #666;
-        }
-        .likes-count {
-            margin-top: 10px;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-
 {% extends 'base.html' %}
 
-{% block content %}
-    <h1>All Posts</h1>
+{% block title %}Список проектов{% endblock %}
 
-    {% for post in posts %}
-        <div class="post">
-            {% if post.image_names %}
-                {% for image in post.image_names %}
-                    <img src="{{ url_for('static', filename= 'uploads/' + image) }}" alt="Post Image">
-                {% endfor %}
-            {% endif %}
-            <div class="post-title">{{ post.title }}</div>
-            <div class="post-date">{{ post.date }}</div>
-            <div class="post-content">{{ post.content }}</div>
-            <div class="likes-count">Likes: {{ post.likes_count }}</div>
-        </div>
-    {% endfor %}
+{% block content %}
+    <h2 class="my-4">Активные проекты</h2>
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text">Дата создания: {{ post.date }}</p>
+                        <p class="card-text">{{ post.content[:35] }}...</p>
+                        <a href="{{ url_for('projects.post_detail', post_id=post.id) }}" class="btn btn-primary">Подробнее</a>
+                        {% if user %}
+                            <a href="{{ url_for('projects.like_post', post_id=post.id) }}" class="btn btn-success">Лайк ({{ post.likes_count }})</a>
+                        {% endif %}
+                        {% if user == 'admin' %}
+                            <a href="{{ url_for('admin.UpdatePost', post_id=post.id) }}" class="btn btn-warning">Редактировать проект</a>
+                            <a href="{{ url_for('admin.ProjectClose', post_id=post.id) }}" class="btn btn-danger">Закрыть проект</a>
+                            <button class="btn btn-danger" onclick="deleteProject({{ post.id }})">Удалить проект</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function deleteProject(postId) {
+        var deleteUrl = "{{ url_for('admin.post_delete', post_id=0) }}".replace("0", postId);
+        if (confirm('Вы уверены, что хотите удалить проект?')) {
+            $.ajax({
+                type: 'DELETE',
+                url: deleteUrl,
+                success: function() {
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>
 
     {% if not posts %}
-        <p>No posts available.</p>
+        <p>Активных проектов нет :(</p>
     {% endif %}
 {% endblock %}
-</body>
-</html>

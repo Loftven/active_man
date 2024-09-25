@@ -2,52 +2,82 @@ from datetime import datetime, timedelta, timezone
 from db import db
 import hashlib
 import os
-from flask import Flask, jsonify
-from sources.project import blp as project_blp
-from sources.user import blp as author_blp
-from sources.qr import blp as qr_blp
-from sources.admin import blp as admin_blp
-from init_db import gen_users
+
+from dotenv import load_dotenv
+from flask import Flask, jsonify, g
+
 from flask_jwt_extended import (
     create_access_token,
     get_jwt,
     get_jwt_identity,
     JWTManager,
-    set_access_cookies
+    set_access_cookies,
+    verify_jwt_in_request
 )
 
+from constants import TIME_JWT, LIKES_REQUIRED, MAX_CONTENT_LENGTH
 from models import AuthorModel, BlocklistJwt
+from sources.project import blp as project_blp
+from sources.user import blp as author_blp
+from sources.qr import blp as qr_blp
+from sources.admin import blp as admin_blp
 
+
+load_dotenv()
 
 def create_app(db_url=None):
     #TODO: убрать ключи из конфигоа в отдел файл! UPLOAD_FOLDER
     app = Flask(__name__, template_folder='templates')
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url or os.getenv(
-        "DATABASE_URL",
-        "sqlite:///data.db"
+        'DATABASE_URL',
+        'sqlite:///data.db'
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['JWT_SECRET_KEY'] = 'enc_key_for_production_864792'
-    app.config['SECRET_KEY'] = 'MY-SECRET-KEY-CSRF'
+    app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY')
+    app.config['SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
     app.config['JWT_COOKIE_SECURE'] = False  # change to True in production
-    app.config['JWT_TOKEN_LOCATION'] = ["cookies", "headers"]
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=5)
+    app.config['JWT_TOKEN_LOCATION'] = ['cookies', 'headers']
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=TIME_JWT)
     app.config['JWT_COOKIE_CSRF_PROTECT'] = False
-    app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
+    app.config['MAX_CONTENT_LENGTH'] = (
+            MAX_CONTENT_LENGTH * MAX_CONTENT_LENGTH
+    )
     app.config['UPLOAD_EXTENSIONS'] = ['jpg', 'png', 'jpeg']
-    app.config['UPLOAD_FOLDER'] = r'C:\Users\ilya1\PycharmProjects\standoff_app\static\uploads'
-    app.config['LATEX_FOLDER'] = r'C:\Users\ilya1\PycharmProjects\standoff_app\latex_templ'
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-    app.config['LIKES_REQUIRED'] = 15
+    app.config['UPLOAD_FOLDER'] = os.path.join(
+        os.path.dirname(__file__), 'static', 'uploads'
+    )
+    app.config['LATEX_FOLDER'] = os.path.join(
+        os.path.dirname(__file__), 'latex_templ'
+    )
+    app.config['MAX_CONTENT_LENGTH'] = (
+            16 * MAX_CONTENT_LENGTH * MAX_CONTENT_LENGTH
+    )
+    app.config['LIKES_REQUIRED'] = LIKES_REQUIRED
 
     db.init_app(app)
     jwt = JWTManager(app)
 
+    @app.before_request
+    def load_logged_in_user():
+        try:
+            verify_jwt_in_request(optional=True)
+            user_identity = get_jwt_identity()
+            if user_identity:
+                g.user = user_identity
+            else:
+                g.user = None
+        except Exception as e:
+            g.user = None
+            print(f'Error in load_logged_in_user: {e}')
+
+    @app.context_processor
+    def inject_user():
+        return dict(user=g.user)
 
     @app.after_request
     def refresh_expiring_jwts(response):
         try:
-            exp_timestamp = get_jwt()["exp"]
+            exp_timestamp = get_jwt()['exp']
             now = datetime.now(timezone.utc)
             target_timestamp = datetime.timestamp(
                 now + timedelta(minutes=30)
@@ -68,20 +98,25 @@ def create_app(db_url=None):
 
     with app.app_context():
         db.create_all()
-        admin = AuthorModel.query.filter(AuthorModel.username == 'admin').first()
+        admin = AuthorModel.query.filter(
+            AuthorModel.username == 'admin'
+        ).first()
         if admin is None:
             admin = {
-                "username": "admin",
-                "password": hashlib.sha256("r04S9[*.£Wb6".encode()).hexdigest(),
-                "token": "e74568eb3ea846b3b50dd121c9d8ae1b",
-                "privileges": 1
+                'username': 'admin',
+                'password': hashlib.sha256(
+                    f"{os.getenv('PASSW_ADMIN')}".encode()
+                ).hexdigest(),
+                'token': 'e74568eb3ea846b3b50dd121c9d8ae1b',
+                'privileges': 1
             }
             db.session.add(AuthorModel(**admin))
             db.session.commit()
             print('Создан пользователь админ')
-            # добавить в конце создание проектов и накрутку лайков для проектов
+            # добавить в конце создание проектов
+            # и накрутку лайков для проектов
         else:
-            print("Админ уже был создан")
+            print('Админ уже был создан')
 
         num_user = AuthorModel.query.all()
         if len(num_user) < 80:
@@ -99,8 +134,8 @@ def create_app(db_url=None):
     @jwt.expired_token_loader
     def expired_token_loader(jwt_header, jwt_payload):
         return jsonify(
-            {"Message": "The token as expired",
-             "error": "token_expired"}
+            {'Message': 'The token as expired',
+             'error': 'token_expired'}
         ), 401
 
     @jwt.unauthorized_loader

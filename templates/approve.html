@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Подтверждение профиля{% endblock %}
+
+{% block content %}
+    <h2 class="text-center my-4">Подтверждение профиля</h2>
+    <form id="approveForm">
+        <div class="mb-3">
+            <label for="first_name" class="form-label">Имя</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" required>
+        </div>
+        <div class="mb-3">
+            <label for="last_name" class="form-label">Фамилия</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" required>
+        </div>
+        <div class="mb-3">
+            <label for="cityzen_id" class="form-label">ID гражданина</label>
+            <input type="text" class="form-control" id="cityzen_id" name="cityzen_id" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Подтвердить</button>
+    </form>
+
+<script>
+    document.getElementById('approveForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const first_name = document.getElementById('first_name').value;
+        const last_name = document.getElementById('last_name').value;
+        const cityzen_id = document.getElementById('cityzen_id').value;
+
+        fetch("{{ url_for('users.UserProfileApprove') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                first_name: first_name,
+                last_name: last_name,
+                cityzen_id: cityzen_id
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '{{ url_for('users.UserProfile') }}';
+            } else {
+                return response.text().then(text => { throw new Error(text) });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Произошла ошибка при отправке данных. Пожалуйста, проверьте введенные данные и попробуйте снова.');
+        });
+    });
+</script>
+{% endblock %}
