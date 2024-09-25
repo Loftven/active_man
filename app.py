@@ -5,6 +5,7 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, g
+
 from flask_jwt_extended import (
     create_access_token,
     get_jwt,
@@ -116,6 +117,14 @@ def create_app(db_url=None):
             # и накрутку лайков для проектов
         else:
             print('Админ уже был создан')
+
+        num_user = AuthorModel.query.all()
+        if len(num_user) < 80:
+            users = gen_users()
+            for user in users:
+                db.session.add(AuthorModel(**user))
+            db.session.commit()
+
 
     app.register_blueprint(project_blp)
     app.register_blueprint(author_blp)
