@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from db import db
 import hashlib
 import os
+from init_db import gen_users
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, g
@@ -33,8 +34,8 @@ def create_app(db_url=None):
         'sqlite:///data.db'
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY')
-    app.config['SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+    app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY') or 'My-secret-key'
+    app.config['SECRET_KEY'] = os.getenv('JWT_SECRET_KEY') or 'My-secret-key'
     app.config['JWT_COOKIE_SECURE'] = False  # change to True in production
     app.config['JWT_TOKEN_LOCATION'] = ['cookies', 'headers']
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=TIME_JWT)

@@ -16,6 +16,7 @@ from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import text
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 from constants import BASE_DIR
 from db import db
@@ -153,11 +154,9 @@ class UserProfileApprove(MethodView):
                      'first_name=\'{first_name}\' and'
                      ' last_name=\'{last_name}\' and '
                      'cityzen_id=\'{cityzen_id}\''.format(**user_data))
-        engine = create_engine('sqlite:///instance/data.db')
-        con = engine.connect()
-        result = con.execute(query, user_data)
-        exists = result.fetchone()
-        con.close()
+
+        result = db.session.execute(query)
+        exists = result.fetchall()
 
         if not exists:
             return render_template(
@@ -170,7 +169,6 @@ class UserProfileApprove(MethodView):
         user.last_name = user_data['last_name']
         user.cityzen_id = user_data['cityzen_id']
         user.privileges = 1
-        db.session.close_all()
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('users.UserProfile'))
