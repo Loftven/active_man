@@ -1,141 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Post</title>
-    <style>
-        #drop-area {
-            border: 2px dashed #ccc;
-            border-radius: 20px;
-            width: 300px;
-            height: 200px;
-            padding: 20px;
-            text-align: center;
-            margin: 20px auto;
-            position: relative;
-        }
-        #drop-area.hover {
-            border-color: #000;
-        }
-        .preview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .preview img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
 {% extends 'base.html' %}
 
+{% block title %}Редактировать проект{% endblock %}
+
 {% block content %}
-    <h1>Edit Post</h1>
-    <form method="POST" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.title.label }}<br>
-            {{ form.title(size=80, value=post.title) }}<br>
-        </p>
-        <p>
-            {{ form.content.label }}<br>
-            {{ form.content(rows=10, cols=80, value=post.content) }}<br>
-        </p>
-        <p>
-            {{ form.images.label }}<br>
-            <div id="drop-area">
-                <h3>Drag files here</h3>
-                <p>or</p>
-                <input type="file" id="fileElem" name="images" multiple accept="image/*" onchange="handleFiles(this.files)">
-                <label for="fileElem">Choose files</label>
-            </div>
-        </p>
-        <div class="preview" id="preview">
-            {% if post.images %}
-                {% for image in post.images %}
-                    <img src="{{ image }}" alt="Current image">
-                {% endfor %}
-            {% endif %}
+<div class="container py-4" style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <h2 class="text-center my-4">Редактировать проект</h2>
+    <form method="post" action="{{ url_for('admin.UpdatePost', post_id=post.id) }}" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="title" class="form-label">Название проекта</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ post.title }}" required>
         </div>
-        <p>{{ form.submit() }}</p>
+        <div class="mb-3">
+            <label for="content" class="form-label">Описание</label>
+            <textarea class="form-control" id="content" name="content" rows="5" required>{{ post.content }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="images" class="form-label">Изображения</label>
+            <input type="file" class="form-control" id="images" name="images" multiple>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Обновить проект</button>
     </form>
-
-    <script>
-        let dropArea = document.getElementById('drop-area');
-        let preview = document.getElementById('preview');
-        const fileInput = document.getElementById('fileElem');
-        let files = []; // массив для хранения файлов
-
-        // Предотвращаем стандартное поведение браузера
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, preventDefaults, false);
-            document.body.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        // Классы для стилей во время перетаскивания
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => dropArea.classList.add('hover'), false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => dropArea.classList.remove('hover'), false);
-        });
-
-        // Обработка перетаскивания файлов
-        dropArea.addEventListener('drop', (e) => {
-            let dt = e.dataTransfer;
-            let droppedFiles = dt.files;
-            handleFiles(droppedFiles); // Обрабатываем перетаскивание
-        });
-
-        // Обработка файлов
-        function handleFiles(selectedFiles) {
-            const newFiles = Array.from(selectedFiles);
-            newFiles.forEach(file => {
-                if (!files.some(existingFile => existingFile.name === file.name)) {
-                    files.push(file); // Добавляем новый файл в массив
-                    previewFile(file); // Предварительный просмотр
-                }
-            });
-            updateFileInput();
-        }
-
-        function updateFileInput() {
-            const dataTransfer = new DataTransfer();
-            files.forEach(file => {
-                dataTransfer.items.add(file);
-            });
-            fileInput.files = dataTransfer.files; // Обновляем input с файлами
-        }
-
-        // Функция для предпросмотра файла
-        function previewFile(file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onloadend = function () {
-                const img = document.createElement('img');
-                img.src = reader.result;
-                img.style.width = '100px'; // Установите нужные размеры
-                img.style.height = '100px'; // Установите нужные размеры
-                preview.appendChild(img);
-            };
-        }
-
-        // Подключение к input на случай, если пользователь вручную загружает файлы
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
-    </script>
+</div>
 {% endblock %}
-</body>
-</html>

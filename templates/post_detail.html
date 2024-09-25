@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <h2 class="my-4">{{ post.title }}</h2>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <p class="card-text">Дата создания: {{ post.date }}</p>
+                    {% if post.image_names %}
+                        <img src="{{ url_for('static', filename='uploads/' + post.image_names[0]) }}" alt="Post image" class="img-fluid">
+                    {% endif %}
+                    <p class="card-text" style="padding: 20px;">{{ post.content }}</p>
+                    {% if user %}
+                        <a href="{{ url_for('projects.like_post', post_id=post.id) }}" class="btn btn-success">Лайк ({{ post.likes_count }})</a>
+                    {% endif %}
+                    {% if user == 'admin' %}
+                        <a href="{{ url_for('admin.UpdatePost', post_id=post.id) }}" class="btn btn-warning">Редактировать проект</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

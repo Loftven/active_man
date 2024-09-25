@@ -3,19 +3,21 @@
 {% block title %}Ошибка 404{% endblock %}
 
 {% block content %}
+<div class="container py-4" style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
     {%  if text_error %}
         <div class="text-center">
-            <h2 class="display-4">Ошибка {{ text_error }}</h2>
-            <p>Пожалуйста, проверьте URL-адрес или вернитесь на <a href="{{ url_for('projects.Home') }}">главную страницу</a>.</p>
-            <img src="{{ url_for('static', filename='images/404.png') }}" alt="Error" class="img-fluid" style="max-width: 400px;">
+            <h2 class="display-4">Ошибка</h2>
+            <h3 class="display-4">{{ text_error }}</h3>
+            <p>Пожалуйста, проверьте URL-адрес или вернитесь на <a href="{{ url_for('projects.home') }}">главную страницу</a>.</p>
+            <img src="{{ url_for('static', filename='images/error.png') }}" alt="Error" class="img-fluid" style="max-width: 400px;">
         </div>
     {% else %}
         <div class="text-center">
             <h2 class="display-4">Ошибка 404</h2>
             <p class="lead">К сожалению, страница, которую вы ищете, не найдена.</p>
-            <p>Пожалуйста, проверьте URL-адрес или вернитесь на <a href="{{ url_for('projects.Home') }}">главную страницу</a>.</p>
-            <img src="{{ url_for('static', filename='images/404.png') }}" alt="404 Страница не найдена" class="img-fluid" style="max-width: 400px;">
+            <p>Пожалуйста, проверьте URL-адрес или вернитесь на <a href="{{ url_for('projects.home') }}">главную страницу</a>.</p>
+            <img src="{{ url_for('static', filename='images/error.png') }}" alt="404 Страница не найдена" class="img-fluid" style="max-width: 400px;">
         </div>
     {% endif %}
-
+</div>
 {% endblock %}

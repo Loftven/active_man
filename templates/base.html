@@ -2,53 +2,84 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{% endblock %}</title>
-    <!-- Bootstrap стили -->
     <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet">
-    <!-- иконки fontawesome -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome.min.css') }}">
-    <!-- кастомные стили -->
     <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
+    <style>
+        body {
+            background-color: rgba(255, 255, 255, 0.1);
+            font-family: 'Arial', sans-serif;
+            background-image: url('{{ url_for('static', filename='back.jpg') }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            position: relative;
+        }
+        nav.navbar {
+            background-color: #0277bd;
+        }
+        .nav-link {
+            color: white !important;
+        }
+        .navbar-toggler {
+            background-color: #0288d1;
+        }
+        .btn-primary {
+            background-color: #0288d1;
+            border-color: #0277bd;
+        }
+        .btn-primary:hover {
+            background-color: #01579b;
+            border-color: #0277bd;
+        }
+    </style>
 </head>
 <body>
 
-<!-- навигация -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-        <a class="navbar-brand" href="#">Открытый блог</a>
+        <a class="navbar-brand" href="{{ url_for('projects.home') }}" style="color: white;">Активный человек</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarNav" aria-controls="navbarNav"
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-end"
-             id="navbarNav">
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href=" ">Главная</a>
+                    <a class="nav-link" href="{{ url_for('projects.home') }}">Главная</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href=" "> Активные проекты</a>
+                    <a class="nav-link" href="{{ url_for('projects.list_posts') }}">Проекты</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="">Регистрация</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="">Вход</a>
-                </li>
+                {% if user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users.UserProfile') }}">Профиль</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users.UserLogout') }}">Выйти</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users.UserRegister') }}">Регистрация</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users.UserLogin') }}">Вход</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- контент дочерних шаблонов -->
 <div class="container my-3">
     {% block content %}
     {% endblock %}
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 </body>
 </html>

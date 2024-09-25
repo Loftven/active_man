@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}QR Code Login{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <h2 class="text-center my-4">Отсканируй QR code для входа</h2>
+    <div class="card mx-auto" style="max-width: 400px;">
+        <div class="card-body text-center">
+            <img src="{{ path }}" alt="QR Code" style="width: 200px; height: 200px;">
+            <p class="card-text">Отсканируй QR code для входа</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

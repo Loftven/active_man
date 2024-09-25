@@ -1,16 +1,18 @@
-from flask import render_template, request
-from flask.views import MethodView
-from models import AuthorModel
-from flask_smorest import Blueprint, abort
-from flask import jsonify
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
-from flask_jwt_extended import create_access_token, set_access_cookies
-import qrcode
 import os
 import time
 
+from flask import render_template, request
+from flask.views import MethodView
+from flask_smorest import Blueprint, abort
+from flask import jsonify
+from flask_jwt_extended import create_access_token, set_access_cookies
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+import qrcode
+
+from constants import TIME_QR
+from models import AuthorModel
 
 blp = Blueprint('qr_code', __name__, 'operations with QR code')
 
@@ -22,15 +24,29 @@ class QrLogin(MethodView):
         id = request.args.get('id')
 
         if token is None or id is None:
-            return render_template('error.html', text_error='missing arguments')
+            return render_template(
+                'error.html',
+                text_error='missing arguments'
+            )
 
         try:
-            author = AuthorModel.query.filter(AuthorModel.id == id).first()
-            if not AuthorModel.query.filter(AuthorModel.token == token).first():
-                return render_template('error.html', text_error='invalid or expired token, please regen your qr code')
+            author = AuthorModel.query.filter(
+                AuthorModel.id == id
+            ).first()
+            if not AuthorModel.query.filter(
+                    AuthorModel.token == token
+            ).first():
+                return render_template(
+                    'error.html',
+                    text_error='invalid or expired token,'
+                               ' please regen your qr code'
+                )
 
-            access_token = create_access_token(identity=author.username, fresh=True)
-            resp = jsonify({"message": "success login"})
+            access_token = create_access_token(
+                identity=author.username,
+                fresh=True
+            )
+            resp = jsonify({'message': 'success login'})
             set_access_cookies(resp, access_token)
 
             return resp, 200
@@ -47,20 +63,29 @@ class QRGenerator(MethodView):
         self.file_path = file_path
 
     def gen_qr(self):
-        qr = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4,)
-        qr.add_data(f'http://domen.com/qr/login?token={self.token}&id={self.id}')
+        qr = qrcode.QRCode(
+            version=None,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(
+            f'http://domen.com/qr/login?token={self.token}&id={self.id}'
+        )
         qr.make(fit=True)
-        img = qr.make_image(fill_color="blue", back_color='white')
+        img = qr.make_image(fill_color='blue', back_color='white')
         img.save(self.file_path)
 
     def rm_qr(self):
-        time.sleep(300)  # Ждем 5 минут
+        time.sleep(TIME_QR)
         try:
             os.remove(self.file_path)
             engine = create_engine('sqlite:///instance/data.db')
             Session = sessionmaker(bind=engine)
             session = Session()
-            author = session.query(AuthorModel).filter(AuthorModel.id == self.id).first()
+            author = session.query(AuthorModel).filter(
+                AuthorModel.id == self.id
+            ).first()
             if author:
                 author.token = None
                 session.commit()
@@ -69,7 +94,3 @@ class QRGenerator(MethodView):
             session.rollback()
         finally:
             session.close()
-
-
-
-

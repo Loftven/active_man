@@ -12,7 +12,7 @@ from db import db
 
 
 class BlocklistJwt(db.Model):
-    __tablename__ = "blocklistjwt"
+    __tablename__ = 'blocklistjwt'
     id = db.Column(
         db.Integer,
         primary_key=True

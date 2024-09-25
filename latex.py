@@ -1,7 +1,9 @@
 def generate_latex(project_name, description, photos):
     #photos_list = photos.rsplit(',')
     photos_str = '\n'.join(
-        [f'\\includegraphics[width=0.8\\textwidth]{{static/photos/{photo.strip()}}} \\\\' for photo in photos])
+        [f'\\includegraphics[width=0.8\\textwidth]'
+         f'{{static/photos/{photo.strip()}}} \\\\' for photo in photos]
+    )
 
     latex_code = f"""
 \\documentclass[a4paper,12pt]{{article}}
