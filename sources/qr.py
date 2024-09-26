@@ -70,7 +70,7 @@ class QRGenerator(MethodView):
             border=4,
         )
         qr.add_data(
-            f'http://domen.com/qr/login?token={self.token}&id={self.id}'
+            f'http://domen.com/login/qr?token={self.token}&id={self.id}'
         )
         qr.make(fit=True)
         img = qr.make_image(fill_color='blue', back_color='white')

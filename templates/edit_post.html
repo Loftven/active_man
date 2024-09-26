@@ -6,6 +6,7 @@
 <div class="container py-4" style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
     <h2 class="text-center my-4">Редактировать проект</h2>
     <form method="post" action="{{ url_for('admin.UpdatePost', post_id=post.id) }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
         <div class="mb-3">
             <label for="title" class="form-label">Название проекта</label>
             <input type="text" class="form-control" id="title" name="title" value="{{ post.title }}" required>
