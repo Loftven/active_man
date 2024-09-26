@@ -1,11 +1,29 @@
 from flask_wtf import FlaskForm
 from wtforms import (
-    FileField,
+    MultipleFileField,
     StringField,
     TextAreaField,
     SubmitField
 )
 from wtforms.validators import DataRequired
+
+
+class ApproveForm(FlaskForm):
+    first_name = StringField(
+        'Имя',
+        validators=[DataRequired()]
+    )
+    last_name = StringField(
+        'Фамилия',
+        validators=[DataRequired()]
+    )
+    cityzen_id = StringField(
+        'ID гражданина',
+        validators=[DataRequired()],
+    )
+    submit = SubmitField(
+        'Подтвердить'
+    )
 
 
 class PostForm(FlaskForm):
@@ -17,7 +35,7 @@ class PostForm(FlaskForm):
         'Контент',
         validators=[DataRequired()]
     )
-    images = FileField(
+    images = MultipleFileField(
         'Картинки',
         validators=[DataRequired()],
         description='Upload images (optional)'

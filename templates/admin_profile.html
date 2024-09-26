@@ -14,6 +14,7 @@
                 <p class="card-text">Фамилия: {{ args[1] }}</p>
                 <p class="card-text">ID гражданина: {{ args[2] }}</p>
                 <p class="card-text">Привилегии: {{ args[3] }}</p>
+                <a href="{{ url_for('users.UserProfileQr') }}" class="btn btn-primary w-100 mt-3">QR-код для входа</button></a>
             {% else %}
                 <p class="card-text">У вас пока нет подтвержденных данных.</p>
                 <a href="{{ url_for('users.UserProfileApprove') }}" class="btn btn-primary w-100">Подтвердить данные</a>

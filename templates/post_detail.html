@@ -10,7 +10,9 @@
                 <div class="card-body">
                     <p class="card-text">Дата создания: {{ post.date }}</p>
                     {% if post.image_names %}
-                        <img src="{{ url_for('static', filename='uploads/' + post.image_names[0]) }}" alt="Post image" class="img-fluid">
+                        {% for image_name in post.image_names %}
+                            <img src="{{ url_for('static', filename='uploads/' + image_name) }}" alt="Post image" class="img-fluid mb-2">
+                        {% endfor %}
                     {% endif %}
                     <p class="card-text" style="padding: 20px;">{{ post.content }}</p>
                     {% if user %}
