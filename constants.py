@@ -1,6 +1,6 @@
 import os
 
-BASE_DIR = os.path.join(os.path.dirname(__file__))
+BASE_DIR = os.path.join(os.path.dirname(__file__), 'static')
 LENGHT_JTI = 36
 LENGHT_CONTENT = 100
 LENGHT_TITLE = 20

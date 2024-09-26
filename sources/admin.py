@@ -114,7 +114,7 @@ class UpdatePost(MethodView):
             form = PostForm(obj=project)
             if form.validate_on_submit():
                 project.title = form.title.data
-                project.content = form.title.data
+                project.content = form.content.data
                 images = request.files.getlist('images')
                 filenames = []
                 if images:
@@ -142,7 +142,7 @@ class UpdatePost(MethodView):
                                          image
                                          )
                         )
-                project.image_name = filenames
+                project.image_names = filenames
                 db.session.add(project)
                 db.session.commit()
             return redirect(url_for('projects.list_posts'))
