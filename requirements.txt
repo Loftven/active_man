@@ -12,9 +12,14 @@ MarkupSafe==2.1.5
 marshmallow==3.22.0
 packaging==24.1
 PyJWT==2.9.0
-SQLAlchemy==2.0.33
+SQLAlchemy==2.0.32
 typing_extensions==4.12.2
 webargs==8.4.0
 Werkzeug==3.0.4
 qrcode==7.4.2
 asyncio==3.4.3
+python-dotenv==1.0.1
+pillow==10.4.0
+wtforms==3.1.2
+xkcdpass==1.19.9
+Faker==29.0.0
