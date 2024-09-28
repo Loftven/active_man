@@ -2,6 +2,7 @@ from xkcdpass import xkcd_password as xp
 from faker import Faker
 import uuid
 import hashlib
+import json
 
 
 fake = Faker('ru_RU')
@@ -48,3 +49,9 @@ def gen_users(num=100):
 
         users.append(user)
     return users
+
+
+def add_posts():
+    with open('projects.json', 'r', encoding='utf-8') as f:
+        projects = json.load(f)
+        return projects.get('infrastructure_projects', [])

@@ -85,8 +85,6 @@ class UserProfile(MethodView):
     @jwt_required()
     def get(self):
         try:
-            #TODO: необходимо в шаблоне профиле предусмотреть
-            # возможность отображения подтверженной и нет у.з.
             token = get_jwt()
             author = AuthorModel.query.filter(
                 AuthorModel.username == token['sub']

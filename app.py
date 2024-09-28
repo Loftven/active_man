@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from db import db
 import hashlib
 import os
-from init_db import gen_users
+from init_db import gen_users, add_posts
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, g
@@ -17,7 +17,7 @@ from flask_jwt_extended import (
 )
 
 from constants import TIME_JWT, LIKES_REQUIRED, MAX_CONTENT_LENGTH
-from models import AuthorModel, BlocklistJwt
+from models import AuthorModel, BlocklistJwt, ProjectModel
 from sources.project import blp as project_blp
 from sources.user import blp as author_blp
 from sources.qr import blp as qr_blp
@@ -124,6 +124,23 @@ def create_app(db_url=None):
             users = gen_users()
             for user in users:
                 db.session.add(AuthorModel(**user))
+            db.session.commit()
+        num_projects = ProjectModel.query.all()
+        if len(num_projects) == 0:
+            projects = add_posts()
+            for project in projects:
+                if len(project['image_names']) < 1:
+                    pass
+                title = project.get('title')
+                content = project.get('content')
+                likes_count = project.get('likes_count')
+                image_names = project.get('image_names')
+                post = ProjectModel(title=title,
+                                    content=content,
+                                    likes_count=likes_count,
+                                    image_names=image_names
+                                    )
+                db.session.add(post)
             db.session.commit()
 
 
