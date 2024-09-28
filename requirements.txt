@@ -23,3 +23,4 @@ pillow==10.4.0
 wtforms==3.1.2
 xkcdpass==1.19.9
 Faker==29.0.0
+flask-wtf==1.2.1
