@@ -3,7 +3,7 @@ from db import db
 import hashlib
 import os
 from init_db import gen_users, add_posts
-
+import uuid
 from dotenv import load_dotenv
 from flask import Flask, jsonify, g
 
@@ -26,16 +26,16 @@ from sources.admin import blp as admin_blp
 
 load_dotenv()
 
+
 def create_app(db_url=None):
-    #TODO: убрать ключи из конфигоа в отдел файл! UPLOAD_FOLDER
     app = Flask(__name__, template_folder='templates')
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url or os.getenv(
         'DATABASE_URL',
         'sqlite:///data.db'
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY') or 'My-secret-key'
-    app.config['SECRET_KEY'] = os.getenv('JWT_SECRET_KEY') or 'My-secret-key'
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') or uuid.uuid4().hex
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY') or uuid.uuid4().hex
     app.config['JWT_COOKIE_SECURE'] = False  # change to True in production
     app.config['JWT_TOKEN_LOCATION'] = ['cookies', 'headers']
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=TIME_JWT)
@@ -142,7 +142,6 @@ def create_app(db_url=None):
                                     )
                 db.session.add(post)
             db.session.commit()
-
 
     app.register_blueprint(project_blp)
     app.register_blueprint(author_blp)

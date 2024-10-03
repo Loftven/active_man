@@ -1,12 +1,18 @@
+import os
+from constants import PHOTO_DIR
+
+
 def generate_latex(project_name, description, photos):
-    #photos_list = photos.rsplit(',')
+    current_dir = os.path.dirname(__file__)
     photos_str = '\n'.join(
-        [f'\\includegraphics[width=0.8\\textwidth]'
-         f'{{static/photos/{photo.strip()}}} \\\\' for photo in photos]
+        [f'\\includegraphics[width=0.8\\textwidth]{{{os.path.join(PHOTO_DIR, photo.strip())}}} \\\\'
+         for photo in photos]
     )
 
     latex_code = f"""
 \\documentclass[a4paper,12pt]{{article}}
+\\usepackage[T2A]{{fontenc}}     
+\\usepackage[russian]{{babel}}   
 \\usepackage[utf8]{{inputenc}}
 \\usepackage{{graphicx}}
 \\usepackage{{fancyhdr}}

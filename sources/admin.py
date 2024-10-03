@@ -109,7 +109,6 @@ class UpdatePost(MethodView):
     @admin_required
     def post(self, post_id):
         try:
-            #TODO: Протестить Работает некорректно
             project = ProjectModel.query.get_or_404(post_id)
             form = PostForm(obj=project)
             if form.validate_on_submit():
@@ -123,7 +122,7 @@ class UpdatePost(MethodView):
                             try:
                                 img = Image.open(image)
                                 img.verify()
-                                filename = secure_filename(image.filename)
+                                filename = (image.filename)
                                 image.seek(0)
                                 image.save(os.path.join(
                                     current_app.config['UPLOAD_FOLDER'],
@@ -137,18 +136,25 @@ class UpdatePost(MethodView):
                                 )
                 if project.image_names:
                     for image in project.image_names:
-                        os.remove(
-                            os.path.join(current_app.config['UPLOAD_FOLDER'],
-                                         image
-                                         )
-                        )
+                        try:
+                            os.remove(
+                                os.path.join(current_app.config['UPLOAD_FOLDER'],
+                                             image
+                                             )
+                            )
+                        except OSError as e:
+                            print(e)
                 project.image_names = filenames
                 db.session.add(project)
                 db.session.commit()
             return redirect(url_for('projects.list_posts'))
 
         except SQLAlchemyError as e:
-            return {'error: {}'.format(e): 'message'}, 400
+            return render_template(
+                'error.html',
+                text_error=e
+            )
+
 
     @admin_required
     def get(self, post_id):
@@ -174,7 +180,10 @@ class DeletePost(MethodView):
             db.session.commit()
             return {'Message:': 'success'}, 201
         except SQLAlchemyError as e:
-            return {'error: {}'.format(e): 'message'}, 400
+            return render_template(
+                'error.html',
+                text_error=e
+            )
 
 
 @blp.route('/admin/post/close/<int:post_id>')
@@ -200,18 +209,17 @@ class ProjectClose(MethodView):
                 post.content,
                 post.image_names
             )
+            filename = uuid.uuid4().hex + '.tex'
             filepath = os.path.join(
                 current_app.config['LATEX_FOLDER'],
-                uuid.uuid4().hex + '.tex'
+                filename
             )
+
             with open(filepath, 'w') as f:
                 f.write(latex_code)
-            os.system(f'pdflatex -shell-escape {filepath}')
+            os.system(f'pdflatex -shell-escape -output-directory={current_app.config["LATEX_FOLDER"]} {filepath}')
 
-            return send_file(
-                filepath.rsplit['.'][0] + '.pdf',
-                as_attachment=True
-            )
+            return send_file(filepath.rsplit('.', 1)[0] + '.pdf', as_attachment=True)
 
         except Exception as e:
            return render_template(
@@ -244,18 +252,17 @@ class ProjectClose(MethodView):
                 post.content,
                 post.image_names
             )
+            filename = uuid.uuid4().hex + '.tex'
             filepath = os.path.join(
                 current_app.config['LATEX_FOLDER'],
-                uuid.uuid4().hex + '.tex'
+                filename
             )
+
             with open(filepath, 'w') as f:
                 f.write(latex_code)
-            os.system(f'pdflatex -shell-escape {filepath}')
+            os.system(f'pdflatex -shell-escape -output-directory={current_app.config["LATEX_FOLDER"]} {filepath}')
 
-            return send_file(
-                filepath.rsplit['.'][0] + '.pdf',
-                as_attachment=True
-            )
+            return send_file(filepath.rsplit('.', 1)[0] + '.pdf', as_attachment=True)
 
         except Exception as e:
            return render_template(

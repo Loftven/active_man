@@ -1,6 +1,7 @@
 import os
 
 BASE_DIR = os.path.join(os.path.dirname(__file__), 'static')
+PHOTO_DIR = os.path.join(BASE_DIR, 'uploads')
 LENGHT_JTI = 36
 LENGHT_CONTENT = 100
 LENGHT_TITLE = 20
