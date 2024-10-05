@@ -28,7 +28,7 @@
 
 ## Прохождение
 <details>
-  <summary>Нажмите, чтобы открыть меню</summary>
+  <summary>Нажмите, чтобы открыть меню:</summary>
   - Заходим на сайт, оцениваем функциональность
   - Регистрируемся
   - Видим, что мы можем поставить лайк, а также подтвердить аккаунт. На этом этапе эксплуатируем or-based SQL-injection ![тык](https://book.hacktricks.xyz/pentesting-web/sql-injection) и ![тык](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://portswigger.net/web-security/sql-injection/cheat-sheet&ved=2ahUKEwjlq6yxgOmIAxVDFBAIHf9XFwgQFnoECBcQAQ&usg=AOvVaw1-chxB0XFPiDFl3H0x7eal)
