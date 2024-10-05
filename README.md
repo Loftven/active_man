@@ -31,10 +31,10 @@
   <summary>Нажмите, чтобы открыть меню</summary>
   - Заходим на сайт, оцениваем функциональность
   - Регистрируемся
-  - Видим, что мы можем поставить лайк, а также подтвердить аккаунт. На этом этапе эксплуатируем or-based SQL-injection [тык](https://book.hacktricks.xyz/pentesting-web/sql-injection) и [тык](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://portswigger.net/web-security/sql-injection/cheat-sheet&ved=2ahUKEwjlq6yxgOmIAxVDFBAIHf9XFwgQFnoECBcQAQ&usg=AOvVaw1-chxB0XFPiDFl3H0x7eal)
+  - Видим, что мы можем поставить лайк, а также подтвердить аккаунт. На этом этапе эксплуатируем or-based SQL-injection ![тык](https://book.hacktricks.xyz/pentesting-web/sql-injection) и ![тык](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://portswigger.net/web-security/sql-injection/cheat-sheet&ved=2ahUKEwjlq6yxgOmIAxVDFBAIHf9XFwgQFnoECBcQAQ&usg=AOvVaw1-chxB0XFPiDFl3H0x7eal)
   - После подтверждения аккаунта нам становится доступен вход по QR. Декодируем его и видим, что для входа, используется токен и id пользователя. Меняем id на id админа
   - Оцениваем функциональность, которая доступна админу. Видим, что мы можем закрыть проект, однако, нам нехватает голосов граждан. Проведя фаззинг, видим, что данный эндпоинт также поддерживает метод POST. Далее подбираем параметр (helper), который нужно передать, чтобы обойти проверку на голоса (True)
-  - Оцениваем функциональность, закрываем проект и получаем сгенерированный pdf-документ. Используя Exiftool определяем, что при генерировании использовался пакет LaTeX [клик](https://book.hacktricks.xyz/pentesting-web/formula-csv-doc-latex-ghostscript-injection#command-execution)
+  - Оцениваем функциональность, закрываем проект и получаем сгенерированный pdf-документ. Используя Exiftool определяем, что при генерировании использовался пакет LaTeX ![клик](https://book.hacktricks.xyz/pentesting-web/formula-csv-doc-latex-ghostscript-injection#command-execution)
   - С помощью полезных нагрузок, приведенных в ссылке выше, проводим разведку сервера. В папке /root/.ssh находим приватный ключ id_rsa. Получаем его в pdf при помощи нагрузки 
   {\scriptsize 
 \immediate\write18{cat /home/simple-user/.ssh/id_rsa | base64 > output}
@@ -43,14 +43,11 @@
 \end{document}
   - Декодируем и сохраняем в файл id_rsa (cat id_in_base64 | base64 -d > id_rsa). Видим, что это зашифрованный ключ.
   - используя ssh2john создаем hash данного ключа (ssh2john id_rsa > hash). С помощью John the Ripper подбираем пароль (john hash -wordllist=/path/to/rockyou). Получаем пароль и входим на сервер ("droopy")
-  - По сюжету необходимо получить доступ к конфиденциальным данным, поэтому проводим разведку, в рабочей папке /app/instance находим archive.zip, защищенный паролем. Однако в нем используется слабое шифрование [тык](https://jizen0x01.github.io/Mess-Me-Writeup/#) и [тык](https://github.com/kimci86/bkcrack/blob/master/example/tutorial.md). Фотографию находим
+  - По сюжету необходимо получить доступ к конфиденциальным данным, поэтому проводим разведку, в рабочей папке /app/instance находим archive.zip, защищенный паролем. Однако в нем используется слабое шифрование ![тык](https://jizen0x01.github.io/Mess-Me-Writeup/#) и ![тык](https://github.com/kimci86/bkcrack/blob/master/example/tutorial.md). Фотографию находим
   - Используя приведенные ссылки выше получаем доступ к содержимому архива: Создаем plain командой <echo -n "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a\x00\x00\x00\x0d\x49\x48\x44\x52" > plain.text>
-  - Проверяем содержимое архива
-  ![1](https://github.com/user-attachments/assets/6298a444-8f59-42be-b534-fa8c9569f895)
-  - Запускаем взлом
-  ![2](https://github.com/user-attachments/assets/81c66218-f2f7-4d36-8670-755e730c2868)
-  - Дешифруем архив
-  ![3](https://github.com/user-attachments/assets/90742a25-7046-415a-8e75-f673fe78afe9)
+  ![Проверяем содержимое архива](assets/1.png)
+  ![Запускаем взлом](assets/2.png)
+  ![Дешифруем архив](assets/3.png)
   - В базе данных находим конечный флаг {ThI5_IS_Your_Fl@6}
 </details>
 
