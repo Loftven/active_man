@@ -19,7 +19,7 @@
 - **Json Web Token** для авторизации
 - **SQLite** для хранения информации
 - **Flask** для создания веб-приложения
-- **Docker** для контейниризации приложения
+- **Docker** для контейнеризации приложения
 - **LaTeX** для генерации документов
 
 ## Запуск
@@ -58,13 +58,18 @@ echo -n "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a\x00\x00\x00\x0d\x49\x48\x44\x52" > pla
 
 
 
- - ![Проверяем содержимое архива](https://github.com/Loftven/standoff_app/blob/master/assets/1.png)
- - ![Запускаем взлом](https://github.com/Loftven/standoff_app/blob/master/assets/2.png)
- - ![Дешифруем архив](https://github.com/Loftven/standoff_app/blob/master/assets/3.png)
+ <p>1</p>
+  <div align="center"><img src="https://github.com/Loftven/standoff_app/blob/master/assets/1.png" alt="Проверяем содержимое архива" /></div>
+  
+  <p>2</p>
+  <div align="center"><img src="https://github.com/Loftven/standoff_app/blob/master/assets/2.png" alt="Запускаем взлом" /></div>
 
-  - В базе данных находим конечный флаг: `{ThI5_IS_Your_Fl@6}`
+  <p>3</p>
+  <div align="center"><img src="https://github.com/Loftven/standoff_app/blob/master/assets/3.png" alt="Дешифруем архив" /></div>
+  
+- В базе данных находим конечный флаг: `{ThI5_IS_Your_Fl@6}`
 
 </details>
 
 ## Заключение
-Спасибо за интерес к проекту! Буду рад предложениям по созданию уязвимых сервисов а также советам советам по существующих. Приятного хакинга 
+Спасибо за интерес к проекту! Буду рад предложениям по созданию уязвимых сервисов, а также советам по существующих. Приятного хакинга !
