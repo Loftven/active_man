@@ -58,13 +58,13 @@ echo -n "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a\x00\x00\x00\x0d\x49\x48\x44\x52" > pla
 
 
 
- <p>1</p>
+ <p>Проверяем содержимое архива</p>
   <div align="center"><img src="https://github.com/Loftven/standoff_app/blob/master/assets/1.png" alt="Проверяем содержимое архива" /></div>
   
-  <p>2</p>
+  <p>Запускаем взлом</p>
   <div align="center"><img src="https://github.com/Loftven/standoff_app/blob/master/assets/2.png" alt="Запускаем взлом" /></div>
 
-  <p>3</p>
+  <p>Дешифруем архив</p>
   <div align="center"><img src="https://github.com/Loftven/standoff_app/blob/master/assets/3.png" alt="Дешифруем архив" /></div>
   
 - В базе данных находим конечный флаг: `{ThI5_IS_Your_Fl@6}`
