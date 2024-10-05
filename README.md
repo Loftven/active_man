@@ -45,9 +45,9 @@
   - используя ssh2john создаем hash данного ключа (ssh2john id_rsa > hash). С помощью John the Ripper подбираем пароль (john hash -wordllist=/path/to/rockyou). Получаем пароль и входим на сервер ("droopy")
   - По сюжету необходимо получить доступ к конфиденциальным данным, поэтому проводим разведку, в рабочей папке /app/instance находим archive.zip, защищенный паролем. Однако в нем используется слабое шифрование ![тык](https://jizen0x01.github.io/Mess-Me-Writeup/#) и ![тык](https://github.com/kimci86/bkcrack/blob/master/example/tutorial.md). Фотографию находим
   - Используя приведенные ссылки выше получаем доступ к содержимому архива: Создаем plain командой <echo -n "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a\x00\x00\x00\x0d\x49\x48\x44\x52" > plain.text>
-  ![Проверяем содержимое архива](assets/1.png)
-  ![Запускаем взлом](assets/2.png)
-  ![Дешифруем архив](assets/3.png)
+  ![Проверяем содержимое архива](https://github.com/Loftven/standoff_app/blob/master/assets/1.png)
+  ![Запускаем взлом](https://github.com/Loftven/standoff_app/blob/master/assets/2.png)
+  ![Дешифруем архив](https://github.com/Loftven/standoff_app/blob/master/assets/3.png)
   - В базе данных находим конечный флаг {ThI5_IS_Your_Fl@6}
 </details>
 
