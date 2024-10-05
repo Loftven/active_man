@@ -231,7 +231,6 @@ class ProjectClose(MethodView):
     @blp.arguments(ProjectClose)
     def post(self, helper, project_id):
         try:
-            #TODO: добавить в образ виртуалки LaTeX м проверить работу эксплойта
             post = ProjectModel.query.filter(
                 ProjectModel.id == project_id
             ).first()
