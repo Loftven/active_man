@@ -33,15 +33,12 @@
 
   - Заходим на сайт и оцениваем функциональность.
   - Регистрируемся.
-  - Видим, что можем поставить лайк и подтвердить аккаунт. На этом этапе эксплуатируем SQL-инъекцию, основанную на OR ![тык](https://book.hacktricks.xyz/pentesting-web/sql-injection) и ![тык](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://portswigger.net/web-security/sql-injection/cheat-sheet&ved=2ahUKEwjlq6yxgOmIAxVDFBAIHf9XFwgQFnoECBcQAQ&usg=AOvVaw1-chxB0XFPiDFl3H0x7eal).
+  - Видим, что можем поставить лайк и подтвердить аккаунт. На этом этапе эксплуатируем or-based SQL injection ![тык](https://book.hacktricks.xyz/pentesting-web/sql-injection) и ![тык](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://portswigger.net/web-security/sql-injection/cheat-sheet&ved=2ahUKEwjlq6yxgOmIAxVDFBAIHf9XFwgQFnoECBcQAQ&usg=AOvVaw1-chxB0XFPiDFl3H0x7eal).
   - После подтверждения аккаунта становится доступным вход по QR. Декодируем его и видим, что для входа используется токен и id пользователя. Меняем id на id админа.
   - Оцениваем функциональность, доступную админу. Видим, что можем закрыть проект, однако не хватает голосов граждан. Проведя фаззинг, обнаруживаем, что данный эндпоинт также поддерживает метод POST. Далее подбираем параметр (helper), который нужно передать, чтобы обойти проверку на голоса (True).
   - Закрываем проект и получаем сгенерированный PDF-документ. Используя `Exiftool`, определяем, что при генерации использовался пакет LaTeX ![клик](https://book.hacktricks.xyz/pentesting-web/formula-csv-doc-latex-ghostscript-injection#command-execution).
   - С помощью полезных нагрузок, приведённых в ссылке выше, проводим разведку сервера. В папке `/root/.ssh` находим приватный ключ `id_rsa`. Получаем его в PDF при помощи нагрузки:
 
-    
-
-latex
 {\scriptsize
 \immediate\write18{cat /home/simple-user/.ssh/id_rsa | base64 > output}
 \input{output}
@@ -68,5 +65,6 @@ echo -n "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a\x00\x00\x00\x0d\x49\x48\x44\x52" > pla
   - В базе данных находим конечный флаг: `{ThI5_IS_Your_Fl@6}`
 
 </details>
+
 ## Заключение
 Спасибо за интерес к проекту! Буду рад предложениям по созданию уязвимых сервисов а также советам советам по существующих. Приятного хакинга 
